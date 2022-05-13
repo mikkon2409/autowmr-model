@@ -42,7 +42,7 @@ if __name__ == '__main__':
             with open(ann_path) as f:
                 annotations = list(csv.reader(f, delimiter=' '))
             annotations = convert2display_boxes(annotations, display_classes_whitelist)
-            with open(ann_path + '.new', 'w') as f:
+            with open(ann_path, 'w') as f:
                 f.write('\n'.join([' '.join(box) for box in annotations]))
     elif args.dataset_type == 'digits':
         pass
@@ -57,10 +57,10 @@ if __name__ == '__main__':
     train_set = entities[:train_set_len]
     test_set = entities[train_set_len:]
 
-    with open(os.path.join(args.dataset_root, 'train.txt.new'), 'w') as file:
+    with open(os.path.join(args.dataset_root, 'train.txt'), 'w') as file:
         file.write(''.join(train_set))
 
-    with open(os.path.join(args.dataset_root, 'valid.txt.new'), 'w') as file:
+    with open(os.path.join(args.dataset_root, 'valid.txt'), 'w') as file:
         file.write(''.join(test_set))
 
     is_digits = args.dataset_type == 'digits'
