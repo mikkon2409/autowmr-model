@@ -89,10 +89,9 @@ def convert2digits_boxes(boxes, image):
 
 if __name__ == '__main__':
     args = parse_args()
-
+    images_path = os.path.join(args.dataset_root, 'obj_train_data')
+    files = os.listdir(images_path)
     if args.dataset_type == 'display':
-        images_path = os.path.join(args.dataset_root, 'obj_train_data')
-        files = os.listdir(images_path)
         files = list(filter(lambda x: x[-4:] == '.txt', files))
         for file in files:
             ann_path = os.path.join(images_path, file)
@@ -102,8 +101,6 @@ if __name__ == '__main__':
             with open(ann_path, 'w') as f:
                 f.write('\n'.join([' '.join(box) for box in annotations]))
     elif args.dataset_type == 'digits':
-        images_path = os.path.join(args.dataset_root, 'obj_train_data')
-        files = os.listdir(images_path)
         annotations = list(filter(lambda x: x[-4:] == '.txt', files))
         images = list(filter(lambda x: x[-4:] == '.jpg', files))
         if len(annotations) != len(images):
@@ -126,19 +123,19 @@ if __name__ == '__main__':
     else:
         raise NameError('Dataset type must be "display" or "digits"')
 
+    images_rel_path = 'data/obj_train_data'
+    image_names = list(filter(lambda x: x.strip('.')[1] == 'jpg', files))
 
-    with open(os.path.join(args.dataset_root, 'train.txt')) as f:
-        entities = f.readlines()
-    random.shuffle(entities)
-    train_set_len = int(len(entities) * args.trainset_ratio)
-    train_set = entities[:train_set_len]
-    test_set = entities[train_set_len:]
+    random.shuffle(image_names)
+    train_set_len = int(len(image_names) * args.trainset_ratio)
+    train_set = image_names[:train_set_len]
+    test_set = image_names[train_set_len:]
 
     with open(os.path.join(args.dataset_root, 'train.txt'), 'w') as file:
-        file.write(''.join(train_set))
+        file.write('\n'.join([os.path.join(images_rel_path, item) for item in train_set]))
 
     with open(os.path.join(args.dataset_root, 'valid.txt'), 'w') as file:
-        file.write(''.join(test_set))
+        file.write('\n'.join([os.path.join(images_rel_path, item) for item in test_set]))
 
     is_digits = args.dataset_type == 'digits'
 
