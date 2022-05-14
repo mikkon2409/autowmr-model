@@ -106,7 +106,9 @@ if __name__ == '__main__':
         files = os.listdir(images_path)
         annotations = list(filter(lambda x: x[-4:] == '.txt', files))
         images = list(filter(lambda x: x[-4:] == '.jpg', files))
-        for annotation, image_name in zip(annotations, images, strict=True):
+        if len(annotations) != len(images):
+            raise RuntimeError("num of annotations and images must be the same")
+        for annotation, image_name in zip(annotations, images):
             ann_path = os.path.join(images_path, annotation)
             img_path = os.path.join(images_path, image_name)
             with open(ann_path) as f:
