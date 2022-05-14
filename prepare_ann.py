@@ -124,7 +124,7 @@ if __name__ == '__main__':
         raise NameError('Dataset type must be "display" or "digits"')
 
     images_rel_path = 'data/obj_train_data'
-    image_names = list(filter(lambda x: x.strip('.')[1] == 'jpg', files))
+    image_names = list(filter(lambda x: x.split('.')[1] == 'jpg', files))
 
     random.shuffle(image_names)
     train_set_len = int(len(image_names) * args.trainset_ratio)
@@ -132,10 +132,10 @@ if __name__ == '__main__':
     test_set = image_names[train_set_len:]
 
     with open(os.path.join(args.dataset_root, 'train.txt'), 'w') as file:
-        file.write('\n'.join([os.path.join(images_rel_path, item) for item in train_set]))
+        file.write('\n'.join(['/'.join([images_rel_path, item]) for item in train_set]))
 
     with open(os.path.join(args.dataset_root, 'valid.txt'), 'w') as file:
-        file.write('\n'.join([os.path.join(images_rel_path, item) for item in test_set]))
+        file.write('\n'.join(['/'.join([images_rel_path, item]) for item in test_set]))
 
     is_digits = args.dataset_type == 'digits'
 
