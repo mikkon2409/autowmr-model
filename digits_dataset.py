@@ -20,8 +20,8 @@ def parse_args():
     return parser.parse_args()
 
 
-def clip(value, min_thresh, max_thresh):
-    return min(max_thresh, max(min_thresh, value))
+def clip(value, lower_bound, upper_bound):
+    return max(lower_bound, min(upper_bound, value))
 
 
 args = parse_args()
