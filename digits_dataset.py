@@ -20,6 +20,10 @@ def parse_args():
     return parser.parse_args()
 
 
+def clip(value, min_thresh, max_thresh):
+    return min(max_thresh, max(min_thresh, value))
+
+
 args = parse_args()
 trainset_percentage = args.trainset_percentage
 if trainset_percentage < 0 or trainset_percentage > 1:
@@ -67,10 +71,6 @@ for annotation_file in tqdm(annotation_files_paths):
                             annotation['cy'] + annotation['h'] / 2],
                            axis='columns')
     annotation.columns = ['label', 'x1', 'y1', 'x2', 'y2']
-    annotation['x1'] -= annotation['x1'] * 0.1
-    annotation['y1'] -= annotation['y1'] * 0.1
-    annotation['x2'] += annotation['x2'] * 0.1
-    annotation['y2'] += annotation['y2'] * 0.1
     annotation[['x1', 'y1', 'x2', 'y2']] = annotation[[
         'x1', 'y1', 'x2', 'y2']].clip(0, 1)
 
@@ -80,13 +80,15 @@ for annotation_file in tqdm(annotation_files_paths):
     annotation_abs_coords = annotation.copy()
     annotation_abs_coords[['x1', 'x2']] *= img_width
     annotation_abs_coords[['y1', 'y2']] *= img_height
-    annotation_abs_coords[['x1', 'y1', 'x2', 'y2']] = annotation_abs_coords[[
-        'x1', 'y1', 'x2', 'y2']].round(decimals=0).astype(int)
 
     left = annotation_abs_coords['x1'].min()
+    left = round(clip((left - left * 0.1), 0, img_width))
     top = annotation_abs_coords['y1'].min()
+    top = round(clip((top - top * 0.1), 0, img_height))
     right = annotation_abs_coords['x2'].max()
+    right = round(clip((right + right * 0.1), 0, img_width))
     bottom = annotation_abs_coords['y2'].max()
+    bottom = round(clip((bottom + bottom * 0.1), 0, img_height))
 
     image = image[top:bottom, left:right]
     img_height, img_width = image.shape[:2]
