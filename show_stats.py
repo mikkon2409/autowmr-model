@@ -49,21 +49,19 @@ if not names_path.exists():
 names = pd.read_csv(names_path, header=None, names=['classes'])['classes']
 
 train_annotations_path = read_annotations_path(train_path, dataset_path)
-print(train_annotations_path)
-
 valid_annotations_path = read_annotations_path(valid_path, dataset_path)
-print(valid_annotations_path)
 
 train_names, train_values = get_stats(train_annotations_path, names)
 valid_names, valid_values = get_stats(valid_annotations_path, names)
 
 colors = sns.color_palette('pastel')[0:len(names)]
 
-fig = plt.figure(1, figsize=(15, 15))
+fig = plt.figure(1, figsize=(15, 15), dpi=150)
 ax1 = fig.add_subplot(121)
 ax2 = fig.add_subplot(122)
 ax1.pie(train_values, labels = train_names, colors = colors, autopct='%.2f%%')
 ax1.title.set_text('Train set')
 ax2.pie(valid_values, labels = valid_names, colors = colors, autopct='%.2f%%')
 ax2.title.set_text('Validation set')
+plt.savefig(Path(dataset_path, 'labels_percentage.png'))
 plt.show()
